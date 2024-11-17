@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.6/.schema/devbox.schema.json",
+  "packages": [
+    "python@3.12.0",
+    "minikube@latest",
+    "fluxcd@latest",
+    "kubectl@latest",
+    "go-task@latest",
+    "kubernetes-helm@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      ". $VENV_DIR/bin/activate"
+    ],
+    "test": [
+      "echo \"Error: no test specified\" && exit 1"
+    ]
+  }
+}

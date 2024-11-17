@@ -1,0 +1,82 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: tesseractsrdsinstances.awsxplane.49labs.io
+spec:
+  group: awsxplane.49labs.io
+  names:
+    kind: TesseractRDSInstance
+    plural: tesseractsrdsinstances
+  claimNames:
+    kind: TesseractRDSInstanceClaim
+    plural: tesseractrdsinstanceclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              engine:
+                type: string
+                description: RDS Engine type (e.g., "mysql").
+              size:
+                type: string
+                description: RDS instance size (e.g., "db.t3.micro").
+              storageGB:
+                type: integer
+                description: Storage size in GB.
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: teseractrdssinstances.aws
+spec:
+  compositeTypeRef:
+    apiVersion: awsxplane.49labs.io/v1alpha1
+    kind: TesseractRDSInstance
+  resources:
+  - name: rdsinstance
+    base:
+      apiVersion: rds.aws.upbound.io/v1beta3
+      kind: Instance
+      spec:
+        forProvider:
+          allocatedStorage: 20
+          autoGeneratePassword: true
+          autoMinorVersionUpgrade: true
+          backupRetentionPeriod: 14
+          backupWindow: 09:46-10:16
+          dbName: example
+          engine: postgres
+          engineVersion: "16.1"
+          instanceClass: db.t3.micro
+          kmsKeyIdSelector:
+            matchLabels:
+              testing.upbound.io/example-name: sample-key
+          maintenanceWindow: Mon:00:00-Mon:03:00
+          passwordSecretRef:
+            key: password
+            name: example-dbinstance
+            namespace: crossplane-system
+          publiclyAccessible: false
+          region: us-east-1
+          skipFinalSnapshot: true
+          storageEncrypted: true
+          storageType: gp2
+          username: adminuser
+        writeConnectionSecretToRef:
+            name: example-dbinstance-out
+            namespace: default
+    patches:
+    - fromFieldPath: "spec.engine"
+      toFieldPath: "spec.forProvider.engine"
+    - fromFieldPath: "spec.size"
+      toFieldPath: "spec.forProvider.dbInstanceClass"
+    - fromFieldPath: "spec.storageGB"
+      toFieldPath: "spec.forProvider.allocatedStorage"
+

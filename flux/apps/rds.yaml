@@ -1,0 +1,9 @@
+apiVersion: awsxplane.49labs.io/v1alpha1
+kind: TesseractRDSInstanceClaim
+metadata:
+  name: app-team-test-rds-instance
+  namespace: app-team-test
+spec:
+  engine: mysql
+  size: db.t3.micro
+  storageGB: 20

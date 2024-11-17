@@ -1,0 +1,7 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-rds
+  namespace: crossplane-system
+spec:
+  package: xpkg.upbound.io/upbound/provider-aws-rds:v1.17.0

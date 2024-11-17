@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  init:
+    env:
+      GITLAB_REPO_OWNER: 49labs/learning
+      GITLAB_REPO: localstack
+      GITLAB_REPO_BRANCH: main
+      GITLAB_REPO_CONFIG_PATH: flux/clusters
+    cmds:
+      - ./scripts/launch-localstack-2.sh
+      - "minikube start"
+      - flux bootstrap gitlab --deploy-token-auth --owner=$GITLAB_REPO_OWNER --repository=$GITLAB_REPO --branch=$GITLAB_REPO_BRANCH --path=$GITLAB_REPO_CONFIG_PATH --personal
+
+  down:
+    cmds:
+      - docker container rm -f localstack
+      - minikube delete
+
+
+
+
+
+
+
+
